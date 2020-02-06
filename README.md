@@ -1,3 +1,3 @@
-# EL2020
+# Spring 2020 Embedded Linux class
 
-This repository documents Luke Dole's class work and projects done for Spring 2020 Embedded Linux 
+This repository documents my class work and projects done for CPS342 
