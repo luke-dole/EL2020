@@ -12,4 +12,4 @@ This repository documents my class work and projects done for CPS342
   
     Minor: Computer Science
   
-    ID: 
+    ID: [N03426055](https://github.com/luke-dole/EL2020)
