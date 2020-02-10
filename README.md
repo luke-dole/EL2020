@@ -1,5 +1,4 @@
-![Image of New Paltz Logo]
-(https://www.newpaltz.edu/media/identity/logos/newpaltzlogo.jpg)
+![Image of New Paltz logo](https://www.newpaltz.edu/media/identity/logos/newpaltzlogo.jpg)
 
 # Spring 2020 Embedded Linux class
 
