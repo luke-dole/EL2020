@@ -6,10 +6,10 @@ This repository documents my class work and projects done for CPS342
 
 1. **Personal Information:**
   
-  Name: Luke Dole
+    Name: Luke Dole
   
-  Major: Mathematics
+    Major: Mathematics
   
-  Minor: Computer Science
+    Minor: Computer Science
   
-  ID: 
+    ID: 
