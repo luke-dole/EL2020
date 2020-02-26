@@ -11,6 +11,11 @@ then
 	X='northeastern'
 fi
 
+if [ $arcd -eq 845 ]
+then
+	X='southeastern'
+fi
+
 if [ $arcd -eq 914 ]
 then
 	X='Westchester County,'
