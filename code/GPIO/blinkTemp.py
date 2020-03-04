@@ -3,7 +3,7 @@ import Adafruit_DHT
 import time
 import os
 
-redPin = 27
+grnPin = 27
 tempPin = 17
 buttonPin = 26
 
@@ -13,7 +13,7 @@ blinkDur = .1
 blinkTime = 7
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(redPin,GPIO.OUT)
+GPIO.setup(grnPin,GPIO.OUT)
 GPIO.setup(buttonPin, GPIO.IN)
 
 def oneBlink(pin):
@@ -37,7 +37,7 @@ try:
 		input_state = GPIO.input(buttonPin)
 		if input_state == True:
 			for i in range (blinkTime):
-				oneBlink(redPin)
+				oneBlink(grnPin)
 			time.sleep(.2)
 			data = readF(tempPin)
 			print (data)
