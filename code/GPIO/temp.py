@@ -1,11 +1,12 @@
-import Adafruit_DHT
+import Adafruit_DHT as DHT
+import RPi.GPIO as GPIO
 
 tempPin = 17
 
-tempSensor = Adafruit_DHT.DHT11
+tempSensor = DHT.DHT11
 
 while True:
-	humidity, temperature = Adafruit_DHT.read_retry(tempSensor, tempPin)
+	humidity, temperature = DHT.read_retry(tempSensor, tempPin)
 	temperature = temperature * 9/5.0 +32
 	if humidity is not None and temperature is not None:
 #		tempFahr = '{0:0.1f}*F'.format(temperature)
