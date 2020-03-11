@@ -27,13 +27,14 @@ def readF(tempPin):
 	temperature = temperature * 9/5.0 +32
 	if humidity is not None and temperature is not None:
 		tempFahr = '{0:0.1f}*F'.format(temperature)
+		hum = '{0:0.1f}%'.format(humidity)
 	else:
 		print('Error Reading Sensor')
 
-	return tempFahr
+	return tempFahr,hum
 
 try:
-	with open("../../log/tempLog.db" , "a") as log:
+	with open("../../log/tempLog.csv" , "a") as log:
 
 		while True:
 			input_state = GPIO.input(buttonPin)
