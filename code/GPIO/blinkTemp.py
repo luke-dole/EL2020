@@ -1,20 +1,25 @@
 import RPi.GPIO as GPIO
-import Adafruit_DHT
+import Adafruit_DHT as DHT
 import time
 import os
+import sqlite3 as sql
+import smtplib
 
 redPin = 27
+greenPin = 22
 tempPin = 17
-buttonPin = 26
 
-tempSensor = Adafruit_DHT.DHT11
+tempSensor = DHT.DHT11
 
 blinkDur = .1
 blinkTime = 7
 
+con = sql.connect('../../log/tempLog.db')
+cur = con.cursor()
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(redPin,GPIO.OUT)
-GPIO.setup(buttonPin, GPIO.IN)
+GPIO.setup(greenPin,GPIO.OUT)
 
 def oneBlink(pin):
 	GPIO.output(pin,True)
@@ -22,31 +27,43 @@ def oneBlink(pin):
 	GPIO.output(pin,False)
 	time.sleep(blinkDur)
 
+
 def readF(tempPin):
-	humidity, temperature = Adafruit_DHT.read_retry(tempSensor, tempPin)
+	humidity, temperature = DHT.read_retry(tempSensor, tempPin)
 	temperature = temperature * 9/5.0 +32
 	if humidity is not None and temperature is not None:
-		tempFahr = '{0:0.1f}*F'.format(temperature)
-		hum = '{0:0.1f}%'.format(humidity)
+		tempFahr = '{0:0.1f}'.format(temperature)
+		hum = '{1:0.1f}'.format(temperature, humidity)
 	else:
 		print('Error Reading Sensor')
 
-	return tempFahr,hum
+	return tempFahr, hum
+
+oldTime = 60
+
+tempFahr, hum = readF(tempPin)
 
 try:
-	with open("../../log/tempLog.db" , "a") as log:
+	while True:
+		if 68 <= float(tempFahr) <= 78:
+			eChk = 0
+			GPIO.output(redPin,False)
+			GPIO.output(greenPin,True)
+		else:
+			GPIO.output(greenPin,False)
+			alert(tempFahr)
+			oneBlink(redPin)
 
-		while True:
-			input_state = GPIO.input(buttonPin)
-			if input_state == True:
-				for i in range (blinkTime):
-					oneBlink(redPin)
-				time.sleep(.2)
-				while True:
-					data = readF(tempPin)
-					print (data)
-					log.write("{0},{1}\n" .format(time.strftime("%Y-%m-%d %H:%M:%S"),str(data)))
-					time.sleep(60)
+		if time.time() - oldTime > 59:
+			tempFahr, hum = readF(tempPin)
+			cur.execute('INSERT INTO tempLog values(?,?,?)', (time.strftime('%Y-%m-%d %H:%M:%S'),tempFahr,hum))
+			con.commit()
+			table = con.execute("select * from tempLog")
+			os.system('clear')
+			print "%-30s %-20s %-20s" %("Date/Time", "Temp", "Humidity")
+			for row in table:
+				print "%-30s %-20s %-20s" %(row[0], row[1], row[2])
+			oldTime = time.time()
 
 except KeyboardInterrupt:
 	print('Thanks for Blinking and Thinking!')
