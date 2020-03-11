@@ -1,4 +1,5 @@
 import Adafruit_DHT
+import time
 
 tempPin = 17
 
@@ -12,3 +13,4 @@ while True:
 		print('Temperature = {0:0.1f}*F Humidity = {1:0.1f}%'.format(temperature, humidity))
 	else:
 		print('Failed to get reading. Try again!')
+
