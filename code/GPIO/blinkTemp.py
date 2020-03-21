@@ -51,7 +51,6 @@ try:
 			GPIO.output(greenPin,True)
 		else:
 			GPIO.output(greenPin,False)
-			alert(tempFahr)
 			oneBlink(redPin)
 
 		if time.time() - oldTime > 59:
