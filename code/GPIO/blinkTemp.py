@@ -51,7 +51,7 @@ try:
 			GPIO.output(greenPin,True)
 		else:
 			GPIO.output(greenPin,False)
-			oneBlink(redPin)
+			GPIO.output(redPin,True)
 
 		if time.time() - oldTime > 59:
 			tempFahr, hum = readF(tempPin)
