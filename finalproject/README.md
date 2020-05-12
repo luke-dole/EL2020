@@ -42,3 +42,36 @@ board itself.
 	1. Another wire is used to connect 'GND' to a 'GND' spot on the connector
 	1. Lastly connect 'DO' to 'GPIO18' on the connector. This will be the light sensors pin number, 18.
 ![Full Setup](IMG_1223.jpeg)
+![Wiring Setup](IMG_1224.jpeg)
+Now that you've completed the wiring of the weather system, it's time to move onto the code of the project
+## **Coding**
+I used four different files while creating my weather system. Three of which are in a directory in my Raspberry Pi titled 'finalproject'.
+These files included:
+* weather.py
+* weather.db
+* flaskServer.py
+The other file was placed one directory ahead of 'finalproject' in a directory named 'templates'.
+This file was:
+* index.html
+Now lets get into the files and what theyre used for.
+1. **weather.db**
+This is the file that I used to store the data that the weather system was going to record. Using SQLite3, I was able to create a database file with many catagories.
+Those categories being:
+Date | Temperature | Humidity | Pressure | Sea Level Pressure | Altitude | Day Or Night | Rain or Shine
+Having this is important if you want to notice changes that happen in the weather over time that your system will be recording. It's also important to have for your web app that
+will display all of this data.
+1. **weather.py**
+This file contains a python script that tells the weather system to start recording and logging data with the sensors wired on the board. This file imports GPIO, and AdaFruit to 
+record data such as temperature, humidity, day or night, if its raining, and so on. This script records weather data every five minutes and plugs it into the weather.db file
+described above.
+1. **flaskServer.py**
+The flaskServer.py file also contains a python script. This is the file that we run when we want to see our data on a web app that will created through the index.html file.
+flaskServer.py imports flask, json, and sqlite3 for it to work its magic. This file is the file that does most of the communication between the other scripts that allows us to
+display our data. Using sqlite3 and json, this file grabs the data recorded from the weather.db database file and pushes it into multiple arrays that are later used in the index.html
+file to chart, graph, and display our data. flaskServer.py uses flask to create 'App Routes' that communicate with both index.html and the internet server to create our web app.
+1. **index.html**
+This file, as stated previously is placed in a directory one ahead of 'finalproject' called 'templates'. This file is the bread and butter of our web app. Using HTML and JavaScript
+code, we use this file to chart and display our data using google charts. The HTML code that surrounds the JavaScript code creates the layout of our web app, creating divisions
+and headers thoughout the page that make our data looked organized. The JavaScript code is used to recieve data from weather.db retrieved by flaskServer.py, and draw google charts
+and gauges that display this information. This file also contains images to be displayed depending on current conditions, and includes a prediction about upcoming weather conditions
+based on high or low air pressure.
