@@ -10,3 +10,6 @@ The materials and equipment I used to create this include:
 * Photosensitive Light Sensor Module
 * Water Level Sensor Module
 * Jumper wires
+## **Wiring**
+I used quite a lot of jumper wires for my project because I was using four sensors most of which have inputs, outputs, and grounds.
+Each sensor required three wires to get it connected.
