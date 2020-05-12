@@ -41,4 +41,4 @@ board itself.
 	1. Using a jumper wire pin 'VCC' on the sensor to a spot in the red plus row on the GPIO board
 	1. Another wire is used to connect 'GND' to a 'GND' spot on the connector
 	1. Lastly connect 'DO' to 'GPIO18' on the connector. This will be the light sensors pin number, 18.
-![Full Setup](file://Users/lukedole/Desktop/IMG_1223.jpeg) 
+![Full Setup](IMG_1223.jpeg)
