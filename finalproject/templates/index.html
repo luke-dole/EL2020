@@ -1,0 +1,370 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<style>
+		img {
+			border-radius: 50%;
+		}
+		</style>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+		<meta http-equic="Pragma" content="no-cache" />
+		<meta http-equiv="Expires" content="0" />
+
+		<title>Raspberry Pi Weather Station</title>
+
+		<!-- imports google charts -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	</head>
+
+	<body onload="go()" style="background-color:PapayaWhip">
+
+		<header>
+			<center>
+				<!-- creates header -->
+				<h1 style = "font-family:courier">Weather Station Data</h1>
+				<h3 style = "font-family:courier">Ebedded Linux Class 2020</h3>
+			</center>
+		</header>
+		<center>
+			<!-- HTML tags with ids necessary for creating and drawing google charts -->
+			<p id ="altitude" style = "font-family:courier"></p>
+			<div class="column"">
+				<div class="row">
+					<p id ="ROS" style = "font-family:courier"></p>
+					<img id="img1" src="#" width="150" height="150">
+				</div>
+				<div class="row">
+					<p id ="DON" style = "font-family:courier"></p>
+					<img id="img2" src="#" width="150" height="120">
+				</div>
+			</div>
+			<p id ="prediction" style = "font-family:courier"></p>
+			<div style="width: 100%;">
+				<div id="temp_gauge" style="width: 50%; height: 250px; float: left">Left Div</div>
+				<div id="hum_gauge" style="width: 50%; height: 250px">Right Div</div>
+			</div>
+			<div id="temp_graph" style="width: 1200px; height: 1200px"></div>
+			<div id="hum_graph" style="width: 1200px; height: 1200px"></div>
+			<div id="tempvhum_graph" style="width: 1200px; height: 1200px"></div>
+			<div style="width: 100%;">
+				<div id="press_gauge" style="width: 50%; height: 250px; float: left">Left Div</div>
+				<div id="seapress_gauge" style="width: 50%; height: 250px">Right Div</div>
+			</div>
+			<div id="press_graph" style="width: 1200px; height: 1200px"></div>
+		</center>
+		<!-- Beginning of javascript script -->
+		<script type='text/javascript'>
+			//loads two different kinds of google charts that are to be used
+			google.charts.load('current', {packages:['gauge']});
+			google.charts.load('current', { packages:['corechart'] });
+			//creates individual arrays for diffent kinds of data for different charts/gauges/outputs
+			var chartData1 = [];
+			var chartData2 = [];
+			var chartData3 = [];
+			var chartData4 = [];
+			var chartData5 = [];
+			var chartData6 = [];
+			var chartData7 = [];
+			function go(){
+				goTime = new Date();
+				console.log('It\'s Go Time! '+goTime);
+				//initiates getData functions for different charts/gauges/outputs
+				getData4();
+				getData5();
+				getData6();
+				getData1();
+				getData2();
+				getData7();
+				getData3();
+				//updates data once per minute
+				setInterval(function() {
+					xTime = new Date();
+					console.clear();
+					console.log('Update Initiated: '+xTime);
+					getData4();
+					getData5();
+					getData6();
+					getData1();
+					getData2();
+					getData7();
+					getData3();
+				}, 3000000);
+			}
+			//gets data from flaskServer for altitude data
+			function getData4(){
+				chartData4 = [];
+				$.getJSON('/sqlData4', function(chartJSON){
+					console.log(chartJSON);
+					for (i = 0; i < chartJSON.length; i++){
+						chartData4.push([chartJSON[i].Altitude]);
+					};
+					writeAltitude();
+				});
+			}
+			//gets data from flaskServer for raining or not raining data
+			function getData5(){
+				chartData5 = [];
+				$.getJSON('/sqlData5', function(chartJSON){
+					console.log(chartJSON);
+					for (i = 0; i < chartJSON.length; i++){
+						chartData5.push([chartJSON[i].RainOrShine]);
+					};
+					writeROS();
+				});
+			}
+			//gets data from flaskServer for day or night data
+			function getData6(){
+				chartData6 = [];
+				$.getJSON('/sqlData6', function(chartJSON){
+					console.log(chartJSON);
+					for (i = 0; i < chartJSON.length; i++){
+						chartData6.push([chartJSON[i].DayOrNight]);
+					};
+					writeDON();
+				});
+			}
+			//gets data from flaskServer for temperature data
+			function getData1(){
+				chartData1 = [];
+				$.getJSON('/sqlData1', function(chartJSON){
+					console.log(chartJSON);
+					for (i = 0; i < chartJSON.length; i++){
+						chartData1.push([new Date(chartJSON[i].Date), chartJSON[i].Temperature]);
+					};
+					drawTempGauge();
+					drawTempGraph();
+				});
+			}
+			//gets data from flaskServer for humidity data
+			function getData2(){
+				chartData2 = [];
+				$.getJSON('/sqlData2', function(chartJSON){
+					console.log(chartJSON);
+					for (i = 0; i < chartJSON.length; i++){
+						chartData2.push([new Date(chartJSON[i].Date), chartJSON[i].Humidity]);
+					};
+					drawHumGauge();
+					drawHumGraph();
+				});
+			}
+			function getData7(){
+				chartData7 = [];
+				$.getJSON('/sqlData7', function(chartJSON){
+					console.log(chartJSON);
+					for (i = 0; i < chartJSON.length; i++){
+						chartData7.push([chartJSON[i].Temperature, chartJSON[i].Humidity]);
+					};
+					drawHumVsTemp();
+				});
+			}
+			//gets data from flaskServer for sea level air pressure and current altitude air pressure
+			function getData3(){
+				chartData3 = [];
+				$.getJSON('/sqlData3', function(chartJSON){
+					console.log(chartJSON);
+					for (i = 0; i < chartJSON.length; i++){
+						chartData3.push([new Date(chartJSON[i].Date), chartJSON[i].Pressure, chartJSON[i].SeaPressure]);
+					};
+					writePrediction();
+					drawPressGauge();
+					drawSeaPressGauge();
+					drawPressGraph();
+				});
+			}
+			//displays current altitude data
+			function writeAltitude() {
+				var alti = chartData4[chartData4.length - 1];
+				document.getElementById('altitude').innerHTML ="You are currently " +  Math.floor(alti) + " feet above sea level";
+			}
+			//displays current rain situation data with image
+			function writeROS() {
+				var rainorshine = chartData5[chartData5.length - 1];
+				document.getElementById('ROS').innerHTML = rainorshine;
+				if (rainorshine == "It is raining") {
+					document.getElementById('img1').src = "https://previews.123rf.com/images/zinako/zinako1708/zinako170801026/85402302-cute-cartoon-umbrella-under-rain-on-white-background.jpg";
+				}
+				else {
+					document.getElementById('img1').src = "https://www.netclipart.com/pp/m/4-41953_sunshine-png-picture-sunshine-png.png";
+				}
+			}
+			//displays if its day or night with image
+			function writeDON() {
+				var dayornight = chartData6[chartData6.length - 1];
+				document.getElementById('DON').innerHTML = dayornight;
+				if (dayornight == "It is Nighttime") {
+					document.getElementById('img2').src = "https://thumbs.dreamstime.com/b/vector-full-moon-stars-clouds-dark-midnight-sky-night-sky-scenery-background-cartoon-full-moon-dark-vector-full-moon-159080722.jpg";
+				}
+				else {
+					document.getElementById('img2').src = "https://ak1.picdn.net/shutterstock/videos/17775361/thumb/1.jpg";
+				}
+			}
+			//writes prediction based on current air pressure
+			function writePrediction() {
+				var airpress = chartData3[chartData3.length - 2];
+				airpress1 = airpress[airpress.length - 1];
+				if (airpress1 > 1010) {
+					document.getElementById('prediction').innerHTML = "You can expect clear skies and cooler air temperatures in the near future";
+				}
+				else if (airpress1 < 1005) {
+					document.getElementById('prediction').innerHTML = "You can expect overcast, potential rain and warmer air temperatures in the near future";
+				}
+				else {
+					document.getElementById('prediction').innerHTML = "__________________________________________";
+				}
+			}
+			//draws temperature gauge for current temperature
+			function drawTempGauge() {
+				var g2data0 = new google.visualization.arrayToDataTable([
+					[ {label: 'Temperature (F)', id:'temp', type: 'number'} ]
+				]);
+				lastRow1 = chartData1[chartData1.length - 1];
+				temp1 = lastRow1[lastRow1.length - 1];
+				g2data0.addRow([temp1]);
+
+				var options0 = {
+					redFrom: 88, redTo: 120,
+					yellowFrom:78, yellowTo: 120,
+					greenFrom:60, greenTo: 120,
+					minorTicks: 5
+				};
+
+				var gauge = new google.visualization.Gauge(document.getElementById('temp_gauge'));
+				gauge.draw(g2data0, options0);
+				gaugeTime = new Date();
+				console.log('Temp Gauge Drawn: '+gaugeTime);
+			}
+		//draws temperature graph for current and past temperatures
+                function drawTempGraph() {
+                                                var gdata = new google.visualization.DataTable();
+                                                gdata.addColumn('date', 'Date');
+                                                gdata.addColumn('number', 'Temperature');
+						lastRow10 = chartData1[chartData1.length - 1];
+						temp10 = lastRow10[lastRow10.length - 1];
+                                                gdata.addRows(chartData1);
+
+                                                var options3 = {
+                                        title: 'Temperature Graph (F)',
+                                        curveType: 'function',
+                                        legend: { position: 'bottom' }
+                                        };
+                                        var graph0 = new google.visualization.LineChart(document.getElementById('temp_graph'));
+                                        graph0.draw(gdata, options3);
+                                        graphTime = new Date();
+			}
+			//draws humidity gauge for current humidity
+                        function drawHumGauge() {
+                                var g2data2 = new google.visualization.arrayToDataTable([
+                                        [ {label: 'Humidity (%)', id:'hum', type: 'number'} ]
+                                ]);
+                                lastRow2 = chartData2[chartData2.length - 1];
+                                hum2 = lastRow2[lastRow2.length - 1];
+                                g2data2.addRow([hum2]);
+
+                                var options2 = {
+                                        redFrom: 85, redTo: 100,
+                                        yellowFrom: 65, yellowTo: 100,
+                                        greenFrom: 0, greenTo: 100,
+                                        minorTicks: 5
+                                };
+
+                                var gauge2 = new google.visualization.Gauge(document.getElementById('hum_gauge'));
+                                gauge2.draw(g2data2, options2);
+                                gaugeTime2 = new Date();
+                                console.log('Hum Gauge Drawn: '+gaugeTime2);
+                        }
+		//draws humidity graph for current and past humidities
+		function drawHumGraph() {
+						var gdata1 = new google.visualization.DataTable();
+						gdata1.addColumn('date', 'Date');
+						gdata1.addColumn('number', 'Humidity');
+						gdata1.addRows(chartData2);
+
+						var options4 = {
+					title: 'Humidity Graph (%)',
+					curveType: 'function',
+					legend: { position: 'bottom' }
+					};
+					var graph1 = new google.visualization.LineChart(document.getElementById('hum_graph'));
+					graph1.draw(gdata1, options4);
+					graphTime1 = new Date();
+			}
+		//draws scatter plot for humidity and temperature
+		function drawHumVsTemp() {
+						var g2data5 = new google.visualization.DataTable();
+						g2data5.addColumn('number', 'Temperature');
+						g2data5.addColumn('number', 'Temperature, Humidity');
+						g2data5.addRows(chartData7);
+
+						var options7 = {
+					title: 'Temperature vs Humidity',
+					hAxis: {title: 'Temperature', minValue: 0, maxValue: 100},
+					vAxis: {title: 'Humidity', minValue: 0, maxValue: 100},
+					legend: 'none'
+					};
+					var graph7 = new google.visualization.ScatterChart(document.getElementById('tempvhum_graph'));
+					graph7.draw(g2data5, options7);
+					graphTime7 = new Date();
+			}
+			//draws pressure gauge for air pressure at current altitude
+                        function drawPressGauge() {
+                                var g2data1 = new google.visualization.arrayToDataTable([
+                                        [ {label: 'Pressure (mb)', id:'press', type: 'number'} ]
+                                ]);
+                                lastRow3 = chartData3[chartData3.length - 2];
+                                press1 = lastRow3[lastRow3.length - 1];
+                                g2data1.addRow([press1]);
+
+                                var options1 = {
+					min: 950, max: 1050,
+                                        minorTicks: 5
+                                };
+
+                                var gauge1 = new google.visualization.Gauge(document.getElementById('press_gauge'));
+                                gauge1.draw(g2data1, options1);
+                                gaugeTime1 = new Date();
+                                console.log('Press Gauge Drawn: '+gaugeTime1);
+                        }
+			//draws pressure gauge for air pressure at sea level
+			function drawSeaPressGauge() {
+				var g2data3 = new google.visualization.arrayToDataTable([
+					[ {label: 'Sea Lvl Pressure (mb)', id:'seapress', type: 'number'} ]
+				]);
+				lastRow4 = chartData3[chartData3.length - 1];
+				seapress1 = lastRow4[lastRow4.length - 1];
+				g2data3.addRow([seapress1]);
+
+				var options4 = {
+					min: 950, max: 1050,
+					minorTicks: 5
+				};
+
+				var gauge4 = new google.visualization.Gauge(document.getElementById('seapress_gauge'));
+				gauge4.draw(g2data3, options4);
+				gaugeTime4 = new Date();
+				console.log('Sea Press Gauge Drawn: '+gaugeTime4);
+			}
+		//draws air pressure graph for both air pressure at current altitude and air pressure at sea level
+		function drawPressGraph() {
+						var gdata2 = new google.visualization.DataTable();
+						gdata2.addColumn('date', 'Date');
+						gdata2.addColumn('number', 'Pressure');
+						gdata2.addColumn('number', 'Sea Level Pressure');
+						gdata2.addRows(chartData3);
+
+						var options5 = {
+					title: 'Pressure Graph (mbar)',
+					curveType: 'function',
+					legend: { position: 'bottom' }
+					};
+					var graph2 = new google.visualization.LineChart(document.getElementById('press_graph'));
+					graph2.draw(gdata2, options5);
+					graphTime2 = new Date();
+			}
+		</script>
+
+	</body>
+
+</html>
