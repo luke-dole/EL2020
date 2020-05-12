@@ -49,10 +49,10 @@ I used four different files while creating my weather system. Three of which are
 These files included:
 * weather.py
 * weather.db
-* flaskServer.py
+* flaskServer.py  
 The other file was placed one directory ahead of 'finalproject' in a directory named 'templates'.
 This file was:
-* index.html
+* index.html  
 Now lets get into the files and what theyre used for.
 1. **weather.db**
 This is the file that I used to store the data that the weather system was going to record. Using SQLite3, I was able to create a database file with many catagories.
