@@ -30,3 +30,17 @@ board itself.
 	1. Another wire goes infornt of 'SCL' and into 'SCL1' on the connector
 	1. The last wire for this sensor goes into 'GND' and likewise into a 'GND' slot on the connector.
 	1. Connecting wires into the spot labeled 'VCC' wont be necessary so don't worry about that.
+1. **DHT11 Temperature & Humidity Sensor Module**
+	1. Plug the sensor into the GPIO board
+	1. Use a jumper wire and plug one end of the pin into the spot infront of the sensor that is labeled 'VCC' and plug the other end into into a spot in the red plus row on the GPIO board
+	1. Another jumper wire is used to connect the spot on the sensor labeled 'DATA' to 'GPIO17' which is GPIO pin number 17 to be used later in the code
+	1. The last jumper wire connects the sensor output labeled 'GND' to a 'GND' spot on the GPIO connector
+1. **Photosensitive Light Sensor Module**
+	1. Plug the light sensor into the GPIO board
+	1. This sensor has four outputs like the MPB180 sensor, only use the three labeled 'VCC', 'GND', and 'DO'
+	1. Using a jumper wire pin 'VCC' on the sensor to a spot in the red plus row on the GPIO board
+	1. Another wire is used to connect 'GND' to a 'GND' spot on the connector
+	1. Lastly connect 'DO' to 'GPIO18' on the connector. This will be the light sensors pin number, 18.
+![full setup](IMG_1223.jpeg)
+![wiring setup](IMG_1224.jpeg)
+This completes the wiring process for setting up the weather system, and we're ready to move onto making the system do its work with the code.
